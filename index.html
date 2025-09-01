@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discount Calculator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-900 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md mx-auto bg-gray-50 shadow-lg rounded-2xl p-6">
+    <h1 class="text-2xl font-semibold text-center mb-6">Discount Calculator</h1><div class="space-y-4">
+  <!-- Base Price Input -->
+  <div>
+    <label class="block text-sm font-medium mb-1" for="basePrice">Base Price</label>
+    <input type="number" id="basePrice" placeholder="Enter base price" class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-gray-400">
+  </div>
+
+  <!-- Discount Input -->
+  <div>
+    <label class="block text-sm font-medium mb-1" for="discount">Discount (%)</label>
+    <input type="number" id="discount" placeholder="Enter discount %" class="w-full border rounded-xl p-2 focus:outline-none focus:ring-2 focus:ring-gray-400">
+  </div>
+
+  <!-- Calculate Button -->
+  <button onclick="calculateDiscount()" class="w-full bg-gray-800 text-white py-2 rounded-xl hover:bg-gray-900 transition">Calculate</button>
+
+  <!-- Results -->
+  <div id="results" class="hidden mt-4 bg-white border rounded-xl p-4">
+    <p id="discountAmount" class="text-lg"></p>
+    <p id="finalPrice" class="text-lg font-semibold"></p>
+  </div>
+</div>
+
+  </div>  <script>
+    function calculateDiscount() {
+      const basePrice = parseFloat(document.getElementById('basePrice').value);
+      const discount = parseFloat(document.getElementById('discount').value);
+
+      if (isNaN(basePrice) || isNaN(discount)) {
+        alert("Please enter valid numbers");
+        return;
+      }
+
+      const discountAmount = (basePrice * discount) / 100;
+      const finalPrice = basePrice - discountAmount;
+
+      document.getElementById('discountAmount').textContent = `Discount Amount: ₹${discountAmount.toFixed(2)}`;
+      document.getElementById('finalPrice').textContent = `Final Price: ₹${finalPrice.toFixed(2)}`;
+
+      document.getElementById('results').classList.remove('hidden');
+    }
+  </script></body>
+</html>
