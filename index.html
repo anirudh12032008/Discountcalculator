@@ -2,49 +2,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discount Calculator</title>
+  <title>Price Calculator</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 text-gray-900 min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-sm mx-auto bg-white shadow-xl rounded-2xl p-6">
-    <h1 class="text-2xl font-bold text-center mb-6 tracking-tight">Discount Calculator</h1><div class="space-y-5">
+    <h1 class="text-2xl font-bold text-center mb-6 tracking-tight">Price Calculator</h1><!-- Mode Switcher -->
+<div class="flex justify-center mb-6 space-x-2">
+  <button id="discountTab" onclick="switchMode('discount')" class="flex-1 py-2 rounded-xl font-medium text-sm bg-gray-900 text-white">Discount</button>
+  <button id="profitTab" onclick="switchMode('profit')" class="flex-1 py-2 rounded-xl font-medium text-sm bg-gray-200 text-gray-700">Profit</button>
+</div>
+
+<div class="space-y-5">
   <!-- Base Price Input -->
   <div class="flex flex-col">
     <label class="text-sm font-medium mb-2" for="basePrice">Base Price</label>
     <input type="number" id="basePrice" placeholder="e.g. 1500" class="w-full border border-gray-300 rounded-xl p-3 text-base focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-gray-700">
   </div>
 
-  <!-- Discount Input -->
+  <!-- Percentage Input -->
   <div class="flex flex-col">
-    <label class="text-sm font-medium mb-2" for="discount">Discount (%)</label>
-    <input type="number" id="discount" placeholder="e.g. 20" class="w-full border border-gray-300 rounded-xl p-3 text-base focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-gray-700">
+    <label id="percentageLabel" class="text-sm font-medium mb-2" for="percentage">Discount (%)</label>
+    <input type="number" id="percentage" placeholder="e.g. 20" class="w-full border border-gray-300 rounded-xl p-3 text-base focus:outline-none focus:ring-2 focus:ring-gray-700 focus:border-gray-700">
   </div>
 
   <!-- Calculate Button -->
-  <button onclick="calculateDiscount()" class="w-full bg-gray-900 text-white py-3 rounded-xl font-medium text-lg shadow-md hover:bg-black transition">Calculate</button>
+  <button onclick="calculate()" class="w-full bg-gray-900 text-white py-3 rounded-xl font-medium text-lg shadow-md hover:bg-black transition">Calculate</button>
 
   <!-- Results -->
   <div id="results" class="hidden mt-6 bg-gray-50 border border-gray-200 rounded-xl p-5 text-center space-y-2">
-    <p id="discountAmount" class="text-lg"></p>
-    <p id="finalPrice" class="text-xl font-semibold text-gray-900"></p>
+    <p id="calculationResult" class="text-lg"></p>
+    <p id="finalValue" class="text-xl font-semibold text-gray-900"></p>
   </div>
 </div>
 
   </div>  <script>
-    function calculateDiscount() {
-      const basePrice = parseFloat(document.getElementById('basePrice').value);
-      const discount = parseFloat(document.getElementById('discount').value);
+    let mode = 'discount';
 
-      if (isNaN(basePrice) || isNaN(discount)) {
+    function switchMode(selected) {
+      mode = selected;
+      document.getElementById('discountTab').className = selected === 'discount' ? "flex-1 py-2 rounded-xl font-medium text-sm bg-gray-900 text-white" : "flex-1 py-2 rounded-xl font-medium text-sm bg-gray-200 text-gray-700";
+      document.getElementById('profitTab').className = selected === 'profit' ? "flex-1 py-2 rounded-xl font-medium text-sm bg-gray-900 text-white" : "flex-1 py-2 rounded-xl font-medium text-sm bg-gray-200 text-gray-700";
+      document.getElementById('percentageLabel').textContent = selected === 'discount' ? "Discount (%)" : "Profit (%)";
+      document.getElementById('percentage').placeholder = selected === 'discount' ? "e.g. 20" : "e.g. 30";
+      document.getElementById('results').classList.add('hidden');
+    }
+
+    function calculate() {
+      const basePrice = parseFloat(document.getElementById('basePrice').value);
+      const percentage = parseFloat(document.getElementById('percentage').value);
+
+      if (isNaN(basePrice) || isNaN(percentage)) {
         alert("Please enter valid numbers");
         return;
       }
 
-      const discountAmount = (basePrice * discount) / 100;
-      const finalPrice = basePrice - discountAmount;
+      let resultText = "";
+      let final = 0;
 
-      document.getElementById('discountAmount').textContent = `Discount Amount: ₹${discountAmount.toFixed(2)}`;
-      document.getElementById('finalPrice').textContent = `Final Price: ₹${finalPrice.toFixed(2)}`;
+      if (mode === 'discount') {
+        const discountAmount = (basePrice * percentage) / 100;
+        final = basePrice - discountAmount;
+        resultText = `Discount Amount: ₹${discountAmount.toFixed(2)}`;
+      } else {
+        const profitAmount = (basePrice * percentage) / 100;
+        final = basePrice + profitAmount;
+        resultText = `Profit Amount: ₹${profitAmount.toFixed(2)}`;
+      }
+
+      document.getElementById('calculationResult').textContent = resultText;
+      document.getElementById('finalValue').textContent = mode === 'discount' ? `Final Price: ₹${final.toFixed(2)}` : `Selling Price: ₹${final.toFixed(2)}`;
 
       document.getElementById('results').classList.remove('hidden');
     }
